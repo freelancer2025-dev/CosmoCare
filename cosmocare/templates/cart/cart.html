@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container section-pad">
+    <p class="eyebrow">YOUR SELECTION</p>
+    <h1>Shopping <em>bag</em></h1>
+    {% if items %}
+        <div class="row g-4">
+            <div class="col-lg-8">
+                {% for item in items %}
+                    <div class="cart-row">
+                        <div class="cart-thumb">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}">
+                            {% else %}<i
+                                class="bi bi-droplet"></i>
+                            {% endif %}
+                        </div>
+                    <div class="flex-grow-1">
+                        <h5>{{ item.product.name }}</h5>
+                        <p class="muted">₹{{ item.product.current_price }}</p>
+                        <form method="post" action="{% url 'update_cart' item.id %}" class="d-flex gap-2">
+                            {% csrf_token %}
+                            <input class="form-control cc-input qty-input" type="number" name="quantity" min="0" max="{{ item.product.stock }}" value="{{ item.quantity }}">
+                            <button  class="btn btn-outline-gold btn-sm"> Update </button>
+                        </form>
+                    </div>
+                        <strong>₹{{ item.line_total }}</strong>
+                        <form method="post" action="{% url 'remove_from_cart' item.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-link text-danger"><i class="bi bi-trash"></i></button></form>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-lg-4">
+                <div class="summary-card">
+                    <h4>Order summary</h4>
+                    <div class="summary-line"><span>Subtotal</span><strong>₹{{ subtotal }}</strong></div>
+                    <p class="muted small">Shipping is calculated at checkout. Free shipping over ₹999.</p><a
+                        href="{% url 'checkout' %}" class="btn btn-gold w-100">Proceed to checkout</a>
+                </div>
+            </div>
+        </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="bi bi-bag"></i>
+                <h3>Your bag is waiting</h3>
+                <a class="btn btn-gold" href="{% url 'product_list' %}">Explore products</a>
+            </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container auth-wrap">
+    <div class="auth-card">
+        <p class="eyebrow">JOIN THE RITUAL</p>
+        <h1>Create an <em>account</em></h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-gold w-100">Create account</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

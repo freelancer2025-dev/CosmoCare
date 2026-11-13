@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container section-pad">
+    <h1>My <em>orders</em></h1>
+    {% for o in orders %}
+    <a class="order-row" href="{% url 'order_detail' o.order_number %}">
+        <div>
+            <strong>{{ o.order_number }}</strong>
+                <small class="d-block muted">
+                    {{ o.created_at|date:"d M Y, h:i A" }}
+                </small>
+        </div>
+        <div>
+            {{ o.get_status_display }}
+        </div>
+        <strong> ₹{{ o.total }} </strong>
+    </a>
+    {% empty %}
+        <p class="muted">You haven't placed any orders yet.</p>
+    {% endfor %}
+</section>
+{% endblock %}

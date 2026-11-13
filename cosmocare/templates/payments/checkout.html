@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container auth-wrap">
+  <div class="auth-card">
+    <p class="eyebrow">SECURE PAYMENT</p>
+    <h1>Complete your <em>order</em></h1>
+    <p>Order {{ order.order_number }}</p>
+    <h2 class="gold-text">₹{{ order.total }}</h2><button id="rzp-button" class="btn btn-gold w-100">Pay securely with Razorpay</button>
+    <p class="muted small mt-3">Your payment is processed by Razorpay. Do not refresh while payment is in progress.</p>
+    <form id="verify-form" method="post" action="{% url 'verify_payment' order.order_number %}">
+      {% csrf_token %}
+      <input type="hidden" name="razorpay_payment_id"><input type="hidden" name="razorpay_order_id">
+      <input type="hidden" name="razorpay_signature">
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  const options = {
+    key: "{{ razorpay_key|escapejs }}",
+    amount: "{{ payment.amount_paise }}",
+    currency: "INR",
+    name: "CosmoCare",
+    description: "Order {{ order.order_number }}",
+    order_id: "{{ payment.gateway_order_id|escapejs }}",
+    handler: function (response) {
+      const form = document.getElementById("verify-form");
+      form.elements["razorpay_payment_id"].value = response.razorpay_payment_id;
+      form.elements["razorpay_order_id"].value = response.razorpay_order_id;
+      form.elements["razorpay_signature"].value = response.razorpay_signature;
+      form.submit();
+    },
+    theme: { color: "#c7a45b" }
+  };
+  document.getElementById("rzp-button").addEventListener("click", function (e) 
+  {
+    e.preventDefault(); if (!options.key || !options.order_id) 
+    { 
+      alert("Payment gateway is not configured."); return; 
+    }
+    new Razorpay(options).open();
+  });
+</script>
+{% endblock %}

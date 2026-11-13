@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+
+    {% block title %}
+    {{ product.name }} | CosmoCare
+
+{% endblock %}
+{% block content %}
+<section class="container section-pad">
+    <div class="row g-5">
+        <div class="col-md-6">
+            <div class="detail-image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}"  alt="{{ product.name }}">{% else %}
+                    <div class="product-placeholder">
+                        <i class="bi bi-droplet"></i>
+                    </div>
+                {% endif %}
+        </div>
+    </div>
+        <div class="col-md-6 detail-copy">
+            <p class="eyebrow">{{ product.category.name }}</p>
+            <h1>{{ product.name }}</h1>
+            <p class="muted">{{ product.short_description }}</p>
+            <div class="detail-price">₹{{ product.current_price }} 
+                {% if product.sale_price %}
+                    <del>₹{{ product.price}}</del>
+                {% endif %}
+            </div>
+            <p>{{ product.description }}</p>
+            <p> 
+                <strong>Skin type:</strong> {{ product.skin_type|default:"All skin types" }}
+            </p>
+            <p>
+                <strong>Ingredients:</strong><br>
+                {{ product.ingredients | linebreaksbr }}
+            </p>
+            <p>
+                <strong>How to use:</strong><br>
+                {{ product.how_to_use | linebreaksbr }}
+            </p>
+            <form method="post" action="{% url 'add_to_cart' product.id %}" class="d-flex gap-2">
+                {% csrf_token %}
+                <input class="form-control cc-input qty-input" type="number" name="quantity" value="1" min="1"
+                    max="{{ product.stock }}">
+                    <button class="btn btn-gold flex-grow-1" 
+                        {% if product.stock < 1 %}
+                            disabled
+                        {% endif %}>
+                        Add to bag
+                    </button>
+            </form>
+            <small class="muted d-block mt-2">
+                {{ product.stock }} available
+            </small>
+        </div>
+    </div>
+    <div class="reviews-block mt-5">
+        <h2>Customer <em>reviews</em></h2>
+        {% for r in product.reviews.all %}
+        <div class="review">
+            <strong> {{ r.user.username }} </strong> · {{ r.rating }}/5 
+            <p>{{ r.comment }}</p>
+        </div>
+        {% empty %}
+            <p class="muted">No reviews yet.</p>
+        {% endfor %}
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'add_review' product.id %}" class="review-form">
+                    {% csrf_token %}
+                    <select name="rating" class="form-select cc-input mb-2">
+                        {% for n in "12345" %}
+                        <option value="{{ n }}">
+                            {{ n }} / 5
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <input class="form-control cc-input mb-2" name="title"
+                        placeholder="Review title">
+                    <textarea class="form-control cc-input mb-2" name="comment" placeholder="Share your experience" required></textarea>
+                    <button class="btn btn-outline-gold">Submit review</button>
+            </form>
+            {% endif %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container auth-wrap">
+    <div class="auth-card">
+        <p class="eyebrow">WELCOME BACK</p>
+        <h1>Sign <em>in</em></h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-gold w-100">Login</button>
+        </form>
+        <p class="muted mt-3">New to CosmoCare? <a class="text-gold" href="{% url 'register' %}">Create an account</a></p>
+    </div>
+</section>
+{% endblock %}

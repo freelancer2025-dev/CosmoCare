@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container section-pad">
+    <h1>My <em>account</em></h1>
+    <p>
+        {{ user.get_full_name|default:user.username }} · {{ user.email }}
+    </p>
+    <h3 class="mt-4">Saved addresses</h3>
+    {% for a in addresses %}
+        <div class="address-card">
+            {{ a.full_name }} · {{ a.phone }}<br>{{ a.line1 }}, {{ a.city }}, {{ a.state }} - {{ a.pincode }}
+        </div>
+    {% empty %}
+        <p class="muted"> No saved addresses yet.</p>
+    {% endfor %}
+    <h3 class="mt-4">Add address</h3>
+    <form method="post" class="auth-card">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-gold">Save address</button>
+    </form>
+    <a class="btn btn-outline-gold mt-3" href="{% url 'my_orders' %}">View my orders</a>
+</section>
+{% endblock %}

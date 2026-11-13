@@ -1,0 +1,92 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+      {% block title %}
+      CosmoCare | Luxury Beauty
+      {% endblock %}
+    </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark cc-nav sticky-top">
+    <div class="container">
+      <a class="navbar-brand brand" href="{% url 'home' %}">COSMO <span>CARE</span> </a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="nav">
+          <ul class="navbar-nav mx-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'product_list' %}">Shop</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'product_list' %}?skin=dry">Skin care</a>
+            </li>
+          </ul>
+          <div class="nav-actions">
+              <a href="{% url 'cart_detail' %}" class="nav-icon">
+                <i class="bi bi-bag"></i>
+                <span class="cart-count">
+                  {{ nav_cart_count|default:0 }}
+                </span>
+              </a>
+              {% if user.is_authenticated %}
+                <a class="nav-link d-inline" href="{% url 'profile' %}">Account</a>
+                <form class="d-inline" method="post" action="{% url 'logout' %}">
+                  {% csrf_token %}
+                  <button class="btn btn-link nav-link d-inline">Logout</button>
+                </form>
+              {% else %}
+                <a class="nav-link d-inline" href="{% url 'login' %}">Login</a>
+              {% endif %}
+          </div>
+      </div>
+    </div>
+    </nav>
+    <main>
+    {% if messages %}
+      <div class="container pt-3">
+        {% for message in messages %}
+        <div class="alert alert-dark border-gold">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% block content %}
+    {% endblock %}
+    </main>
+        <footer class="cc-footer">
+          <div class="container py-5">
+            <div class="row g-4">
+              <div class="col-md-5">
+                <div class="brand">COSMO<span>CARE</span>
+                </div>
+                <p class="muted mt-3">A little luxury. A lot of care. Thoughtful beauty essentials for your everyday ritual.</p>
+              </div>
+              <div class="col-md-3">
+                <h6>Explore</h6>
+                <a href="{% url 'product_list' %}">All products</a>
+                <a href="{% url 'my_orders' %}">My orders</a>
+              </div>
+              <div class="col-md-4">
+                <h6>Customer care</h6>
+                <p class="muted">Questions about an order? Contact our support team through WhatsApp.</p>
+              </div>
+            </div>
+            <hr>
+            <small class="muted">© {% now "Y" %} CosmoCare. All rights reserved.</small>
+          </div>
+        </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
+  </body>
+</html>

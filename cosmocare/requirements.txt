@@ -1,0 +1,6 @@
+Django>=5.2,<5.3
+Pillow>=11.0
+razorpay>=1.4.2
+qrcode[pil]>=8.0
+requests>=2.32
+python-dotenv>=1.0

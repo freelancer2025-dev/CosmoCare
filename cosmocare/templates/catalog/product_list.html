@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}
+    Shop | CosmoCare
+{% endblock %}
+{% block content %}
+<section class="container section-pad">
+    <p class="eyebrow">THE COSMOCARE COLLECTION</p>
+    <h1 class="page-title">Shop <em>beauty</em></h1>
+    <form class="filter-bar row g-2 mb-4">
+        <div class="col-12 col-md-5">
+            <input class="form-control cc-input" name="q" value="{{ q }}" placeholder="Search products, ingredients...">
+        </div>
+        <div class="col-6 col-md-3">
+            <select class="form-select cc-input" name="category">
+                <option value="">All categories</option>
+                {% for c in categories %}
+                    <option value="{{ c.slug }}">
+                        {{ c.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-6 col-md-2">
+            <select class="form-select cc-input" name="sort">
+                <option value="">Sort by</option>
+                <option value="price_low">Price: low to high</option>
+                <option value="price_high">Price: high to low</option>
+            </select>
+        </div>
+        <div class="col-12 col-md-2">
+            <button class="btn btn-gold w-100">Filter</button>
+        </div>
+    </form>
+    <div class="row g-4">
+        {% for product in products %}
+            {% include "catalog/product_card.html" with product=product %}
+        {% empty %}
+            <p class="muted">No products found. Please try another search.</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container section-pad">
+    <p class="eyebrow">ORDER DETAILS</p>
+    <h1>{{ order.order_number }}</h1>
+    <div class="row g-4 mt-2">
+        <div class="col-lg-8">
+            <div class="summary-card">
+                <div class="d-flex justify-content-between">
+                    <h4>Items</h4>
+                    <span class="gold-text">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+                {% for item in order.items.all %}
+                <div class="summary-line">
+                    <span>
+                        {{ item.product_name }} × {{ item.quantity }}
+                    </span>
+                    <strong>₹{{ item.line_total }}</strong>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span>₹{{ order.subtotal }}</span>
+                </div>
+                <div class="summary-line">
+                    <span>Shipping</span>
+                    <span>₹{{ order.shipping }}</span>
+                </div>
+                <div class="summary-line">
+                    <strong>Total</strong>
+                    <strong>₹{{ order.total }}</strong>
+                </div>
+                <p class="muted mt-3">Payment: {{ order.get_payment_method_display }} · {{ order.get_payment_status_display }}</p>
+                <p class="muted">Delivery: {{ order.address_text }}</p>
+            </div>{% if order.status == "PENDING" %}
+            <a class="btn btn-gold mt-3"
+                href="{% url 'payment_checkout' order.order_number %}">Continue payment</a>{% endif %}{% if order.status == "PLACED" or order.status == "PROCESSING" or order.status == "PENDING" %}
+                <form method="post" action="{% url 'cancel_order' order.order_number %}" class="mt-3">
+                    {% csrf_token %}
+                <textarea class="form-control cc-input mb-2" name="reason"
+                    placeholder="Reason for cancellation (optional)">
+                </textarea>
+                <button class="btn btn-outline-gold">Request cancellation</button>
+            </form>
+            {% endif %}
+        </div>
+        <div class="col-lg-4">
+            <div class="summary-card text-center">
+                <h5>Order QR</h5>
+                {% if order.qr_image %}
+                <img class="order-qr" src="{{ order.qr_image.url }}" alt="Order QR code">
+                <p class="muted small">Scan to open your order page. Keep this QR private.</p>
+                {% else %}
+                <p class="muted">QR will be available after order confirmation.</p>{% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

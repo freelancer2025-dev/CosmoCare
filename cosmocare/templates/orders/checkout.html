@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container section-pad">
+    <p class="eyebrow">ALMOST YOURS</p>
+    <h1>Secure <em>checkout</em></h1>
+    {% if addresses %}
+    <form method="post" class="row g-4">
+        {% csrf_token %}
+        <div class="col-lg-7">
+            <div class="summary-card">
+                <h4>Delivery address</h4>{% for a in addresses %}<label class="choice-row"><input type="radio"
+                        name="address" value="{{ a.id }}" {% if forloop.first %}checked{% endif %}
+                        required><span><strong>{{ a.full_name }}</strong><br>{{ a.phone }} · {{ a.line1 }}, {{ a.city }}, {{ a.state }} - {{ a.pincode }}</span></label>{% endfor %}<a href="{% url 'profile' %}"
+                        class="text-gold">+ Add another address</a>
+                <hr>
+                <h4>Payment method</h4><label class="choice-row"><input type="radio" name="payment_method"
+                        value="RAZORPAY" checked><span><strong>Pay online</strong><br><small class="muted">UPI, cards
+                        and other methods supported by Razorpay</small></span></label>
+                        <label class="choice-row">
+                            <input type="radio" name="payment_method" value="COD">
+                            <span>
+                                <strong>Cash on Delivery</strong>
+                                <br>
+                                <small class="muted">Pay when your order arrives</small>
+                            </span>
+                        </label>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="summary-card">
+                <h4>Ready for your ritual?</h4>
+                <p class="muted">Shipping is free on orders above ₹999. The final total is calculated securely on the server.</p>
+                    <button class="btn btn-gold w-100">Place order</button>
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <div class="empty-state">
+        <h3>Add a delivery address first</h3>
+        <a href="{% url 'profile' %}" class="btn btn-gold">Add address</a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

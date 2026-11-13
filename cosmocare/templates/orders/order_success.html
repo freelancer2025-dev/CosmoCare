@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container section-pad text-center success-wrap">
+    <div class="success-icon">
+        <i class="bi bi-check2"></i>
+    </div>
+    <p class="eyebrow">THANK YOU FOR CHOOSING COSMOCARE</p>
+    <h1>Order <em>confirmed</em></h1>
+    <p class="muted">Your order {{ order.order_number }} has been received. 
+        {% if order.payment_status == "PAID" %}
+            Payment successful.
+        {% else %}
+        Payment will be collected on delivery.
+        {% endif %}
+    </p>
+    {% if order.qr_image %}
+    <img class="order-qr" src="{{ order.qr_image.url }}" alt="Order QR">
+    {% endif %}
+    <p class="muted small">If WhatsApp notifications are configured, your order details will be sent to your phone.</p>
+    <a class="btn btn-gold" href="{% url 'order_detail' order.order_number %}">View order</a>
+</section>
+{% endblock %}

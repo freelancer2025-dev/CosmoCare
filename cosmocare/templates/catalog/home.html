@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% block title %}
+    CosmoCare | Luxury Beauty & Skincare
+{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="container hero-inner">
+        <div class="hero-copy">
+            <p class="eyebrow">THE ART OF EVERYDAY LUXURY</p>
+            <h1>Beauty that feels<br><em>like you.</em></h1>
+            <p class="hero-sub">Elevate your daily ritual with thoughtfully curated skincare and beauty essentials.</p>
+            <a class="btn btn-gold" href="{% url 'product_list' %}">Discover the collection <i
+                    class="bi bi-arrow-up-right"></i></a>
+        </div>
+        <div class="hero-orbit">
+            <div class="hero-circle"></div>
+            <div class="hero-product"><span>CC</span><small>GLOW SERUM<br>30 ML</small></div>
+            <div class="hero-caption">PURE CARE · RADIANT YOU</div>
+        </div>
+    </div>
+</section>
+<section class="container section-pad">
+    <div class="section-heading">
+        <div>
+            <p class="eyebrow">CURATED FOR YOU</p>
+            <h2>Shop by <em>category</em></h2>
+        </div><a class="text-gold" href="{% url 'product_list' %}">View all <i class="bi bi-arrow-up-right"></i></a>
+    </div>
+    <div class="row g-3">
+        {% for c in categories %}
+            <div class="col-6 col-md-4 col-lg-2">
+                    <a class="category-tile"
+                        href="{% url 'product_list' %}?category={{ c.slug }}">
+                            {% if c.image %}
+                                <img src="{{ c.image.url }}" alt="{{ c.name }}">{% else %}
+                                    <div class="category-placeholder">
+                                            <i class="bi bi-flower1"></i>
+                                    </div>
+                            {% endif %}
+                            <span>{{ c.name }}</span>
+                    </a>
+            </div>
+            {% empty %}
+                <p class="muted">Add categories from the admin dashboard to display them here.</p>
+            {% endfor %}
+    </div>
+</section>
+<section class="section-dark section-pad">
+    <div class="container">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">THE ICONS</p>
+                <h2>Customer <em>favourites</em></h2>
+            </div><a class="text-gold" href="{% url 'product_list' %}">Shop all</a>
+        </div>
+        <div class="row g-4">
+            {% for p in featured %}{% include "catalog/product_card.html" with product=p %}
+                {% empty %}
+                <p class="muted">Mark products as featured in Django Admin to show them here.</p>
+            {% endfor %}</div>
+    </div>
+</section>
+
+<section class="container ritual-banner section-pad">
+    <p class="eyebrow">YOUR SKIN, YOUR RITUAL</p>
+    <h2>Small rituals. <em>Lasting radiance.</em></h2>
+    <p class="muted">Find the essentials that make your everyday routine feel extraordinary.</p>
+    <a class="btn btn-outline-gold" href="{% url 'product_list' %}">Explore CosmoCare</a>
+</section>
+{% endblock %}
